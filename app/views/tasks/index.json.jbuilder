@@ -12,10 +12,9 @@ json.rows do
     json.aasm_state task.aasm_state
 
     if task.may_start?
-      start_button =  link_to "Start", '#', :onclick => "start_task(#{task.id})"
-      # start_button = link_to(start_task_path(task), method: :put,
-      #                                             title: "Начать", class: "btn btn-default btn-xs"){
-      #   '<span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>'.html_safe }
+      start_button =  content_tag(:span, "Start", :onclick => "start_task(#{task.id})", class: 'btn btn-primary active')
+    else
+      start_button =  content_tag(:span, "Start", class: 'btn btn-primary disabled')
     end
 
     json.actionlinks [start_button].join
