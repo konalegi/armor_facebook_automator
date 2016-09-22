@@ -49,3 +49,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'capybara'
 gem 'capybara-webkit'
 gem 'selenium-webdriver'
+gem "chromedriver-helper", "1.0.0"

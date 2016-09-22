@@ -1,4 +1,9 @@
 require 'capybara/dsl'
+
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, :browser => :chrome)
+end
+
 class FacebookService
   Capybara.default_driver = :selenium
   Capybara.run_server = false
@@ -15,14 +20,11 @@ class FacebookService
   def perform
     visit('https://www.facebook.com/')
     login('h791135@mvrht.com', '123123Abc')
-    # click to /html/body/div[1]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/div[1]/div/a
-    # click to /html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div[1]/div/a[3]/span/span[1]
-    # click to /html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/ul[1]/li[1]/a/span[2]
-    # click to /html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/ul[2]/li[1]/a/span
-    find('/html/body/div[1]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/div[1]/div/a').click
-    find('/html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div[1]/div/a[3]/span/span[1]').click
-    find('/html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/ul[1]/li[1]/a/span[2]').click
-    find('/html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/ul[2]/li[1]/a/span').click
+
+    click_to_profile
+    click_to_life_event
+    click_to_job_and_edu
+    click_to_new_job
 
     # set i currently work there /html/body/div[20]/div[2]/div/div/div/div[2]/div/div[2]/form/div[1]/table/tbody/tr[4]/td[2]/div/div[1]/input
 
@@ -30,19 +32,47 @@ class FacebookService
 
     set_employer(div_index, 'Газпром')
     set_location(div_index, 'Иннополис')
-    set_story(div_index, 'Прям очень нравиться тут работать')
+    set_story(div_index, "Прям очень нравиться тут работать #{Time.now}")
 
     date = Date.parse('2015-06-01')
     set_month(div_index, date.month)
     set_day(div_index, date.day)
     set_year(div_index, date.year)
     click_save(div_index)
-    sleep(1)
+  end
+
+  def click_to_life_event
+    '//*[@id="js_a0"]/span/span[1]'
+    find('/html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[1]/div/div[1]/div/a[3]/span/span[1]').click
+  end
+
+  def click_to_job_and_edu
+    find('/html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/ul[1]/li[1]/a/span[2]').click
+  end
+
+  def click_to_new_job
+    find('/html/body/div[1]/div[2]/div[1]/div/div[2]/div[2]/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[1]/div[1]/div[1]/div[1]/li/div/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/ul[2]/li[1]/a/span').click
+  end
+
+  def click_to_profile()
+    find('/html/body/div[1]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/div[1]/div/a').click
   end
 
   def login(login, password)
+    set_login(login)
+    set_password(password)
+    click_login
+  end
+
+  def set_login(login)
     find('/html/body/div/div[1]/div/div/div/div/div[2]/form/table/tbody/tr[2]/td[1]/input').set(login)
+  end
+
+  def set_password(password)
     find('/html/body/div/div[1]/div/div/div/div/div[2]/form/table/tbody/tr[2]/td[2]/input').set(password)
+  end
+
+  def click_login
     find('/html/body/div/div[1]/div/div/div/div/div[2]/form/table/tbody/tr[2]/td[3]/label/input').click
   end
 
