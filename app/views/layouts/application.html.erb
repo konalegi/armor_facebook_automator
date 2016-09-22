@@ -9,6 +9,12 @@
   </head>
 
   <body>
-    <%= yield %>
+    <div class="container">
+        <%= flash_messages %>
+        <!-- /.row -->
+        <%= yield %>
+
+        <!-- Footer -->
+    </div>
   </body>
 </html>

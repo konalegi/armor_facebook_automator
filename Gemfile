@@ -50,3 +50,10 @@ gem 'capybara'
 gem 'capybara-webkit'
 gem 'selenium-webdriver'
 gem "chromedriver-helper", "1.0.0"
+
+gem 'bootstrap-sass'
+gem 'rails-i18n'
+gem 'sidekiq'
+gem 'aasm'
+gem "bootstrap-table-rails"
+gem 'kaminari'

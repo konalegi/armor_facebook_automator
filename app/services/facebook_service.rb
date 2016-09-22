@@ -5,13 +5,32 @@ Capybara.register_driver :chrome do |app|
 end
 
 class FacebookService
+  attr_reader :login, :password, :employer, :location, :story, :start_date
+
   Capybara.default_driver = :selenium
   Capybara.run_server = false
   Capybara.default_selector = :xpath
 
   include Capybara::DSL
 
+  def self.perform(task_id, params)
+    begin
+      new(params).perform
+      Task.asynk_task_completed(task_id, true)
+    rescue Exception => ex
+      Task.asynk_task_completed(task_id, false, ex.message)
+      raise
+    end
+  end
+
   def initialize(params = {})
+    @login = params[:login]
+    @password = params[:password]
+    @employer = params[:employer]
+    @location = params[:location]
+    @story = params[:story]
+    @start_date = params[:start_date]
+
     # Capybara.app_host = 'https://www.facebook.com'
   end
 
@@ -19,7 +38,10 @@ class FacebookService
   # 123123Abc
   def perform
     visit('https://www.facebook.com/')
-    login('h791135@mvrht.com', '123123Abc')
+
+    set_login(login)
+    set_password(password)
+    click_login
 
     click_to_profile
     click_to_life_event
@@ -30,14 +52,13 @@ class FacebookService
 
     div_index = find_valid_index{ |i| "/html/body/div[#{i}]/div[2]/div/div/div/div[2]/div/div[2]/form/div[1]/table/tbody/tr[1]/td[2]/div/div/div/input" }
 
-    set_employer(div_index, 'Газпром')
-    set_location(div_index, 'Иннополис')
-    set_story(div_index, "Прям очень нравиться тут работать #{Time.now}")
+    set_employer(div_index, employer)
+    set_location(div_index, location)
+    set_story(div_index, story)
 
-    date = Date.parse('2015-06-01')
-    set_month(div_index, date.month)
-    set_day(div_index, date.day)
-    set_year(div_index, date.year)
+    set_month(div_index, start_date.month)
+    set_day(div_index, start_date.day)
+    set_year(div_index, start_date.year)
     click_save(div_index)
   end
 
@@ -56,12 +77,6 @@ class FacebookService
 
   def click_to_profile()
     find('/html/body/div[1]/div[1]/div/div[1]/div/div/div/div[2]/div[1]/div[1]/div/a').click
-  end
-
-  def login(login, password)
-    set_login(login)
-    set_password(password)
-    click_login
   end
 
   def set_login(login)

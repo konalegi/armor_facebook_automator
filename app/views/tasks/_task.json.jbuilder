@@ -1,0 +1,1 @@
+json.extract! task, :id, :login, :password, :employer, :location, :story, :start_date, :aasm_state, :created_at, :updated_at

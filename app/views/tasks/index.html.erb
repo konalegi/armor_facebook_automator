@@ -1,0 +1,87 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Tasks</h1>
+
+<!-- <table>
+  <thead>
+    <tr>
+      <th>Login</th>
+      <th>Password</th>
+      <th>Employer</th>
+      <th>Location</th>
+      <th>Story</th>
+      <th>Start date</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tasks.each do |task| %>
+      <tr>
+        <td><%= task.login %></td>
+        <td><%= task.password %></td>
+        <td><%= task.employer %></td>
+        <td><%= task.location %></td>
+        <td><%= task.story %></td>
+        <td><%= task.start_date %></td>
+        <td><%= link_to 'Show', task %></td>
+        <td><%= link_to 'Edit', edit_task_path(task) %></td>
+        <td><%= link_to 'Destroy', task, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br> -->
+
+<table id="taskstable" data-classes="table table-striped"
+    data-side-pagination="server"
+    data-url='/tasks.json'
+    data-toggle="taskstable"
+    data-show-columns="true"
+    data-detail-formatter="detailFormatter"
+    data-pagination="true"
+    data-show-pagination-switch="true"
+    data-page-list="[10, 15, 30, 50, 100, 200]"
+    data-search="true"
+    data-show-toggle="true"
+    data-key-events="true"
+    data-show-export="true"
+    data-toolbar="#toolbar"
+    data-row-style="rowStyle"
+    >
+    <thead>
+      <tr>
+        <th data-field="login" data-sortable="true" data-align="center">Логин</th>
+        <th data-field="password" data-sortable="true">Пароль</th>
+        <th data-field="employer" data-sortable="true">Работодатель</th>
+        <th data-field="location" data-sortable="true">Место</th>
+        <th data-field="story" data-sortable="true">Стори</th>
+        <th data-field="start_date">Дата начала работы</th>
+        <th data-field="aasm_state" data-sortable="true" data-align="center">Состояние</th>
+        <th data-field="actionlinks" class="col-md-1" data-align="left">Действия</th>
+      </tr>
+    </thead>
+  </table>
+
+  <script>
+      var $table = $('#taskstable');
+
+      $(function () {
+          $table.bootstrapTable();
+
+          start_task = function(taskId){
+            $.ajax({
+                url: '/tasks/' + taskId + '/start.json',
+                type: 'PUT',
+                headers: {
+                      'Accept' : "application/json;",
+                      'Content-Type': "application/json;"
+                    },
+                data: JSON.stringify({})
+            });
+          }
+      });
+  </script>
+
+<%= link_to 'New Task', new_task_path %>
