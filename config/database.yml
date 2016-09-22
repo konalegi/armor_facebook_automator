@@ -1,0 +1,24 @@
+default: &default
+  adapter: postgresql
+  username: dev
+  password:
+  pool: 10
+  timeout: 5000
+
+development:
+  <<: *default
+  database: 'armor_facebook_automator_dev'
+
+test:
+  <<: *default
+  database: 'armor_facebook_automator_test'
+
+production:
+  <<: *default
+  database: 'armor_facebook_automator_prod'
+  password: dev
+
+stage:
+  <<: *default
+  database: 'armor_facebook_automator_prod'
+  password: dev
