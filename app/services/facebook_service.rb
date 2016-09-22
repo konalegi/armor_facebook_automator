@@ -14,12 +14,14 @@ class FacebookService
   include Capybara::DSL
 
   def self.perform(task_id, params)
-    begin
-      new(params).perform
-      Task.asynk_task_completed(task_id, true)
-    rescue Exception => ex
-      Task.asynk_task_completed(task_id, false, ex.message)
-      raise
+    fork do
+      begin
+        new(params).perform
+        Task.asynk_task_completed(task_id, true)
+      rescue Exception => ex
+        Task.asynk_task_completed(task_id, false, ex.message)
+        raise
+      end
     end
   end
 
@@ -60,6 +62,8 @@ class FacebookService
     set_day(div_index, start_date.day)
     set_year(div_index, start_date.year)
     click_save(div_index)
+
+    page.driver.browser.close
   end
 
   def click_to_life_event
